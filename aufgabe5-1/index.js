@@ -12,10 +12,18 @@ const books = [
   { isbn: "978-0-452-28423-4", title: "1984", year: 1949, author: "George Orwell" },
 ];
 
-function lookupISBN(isbn) {
-  return fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`)
-    .then(response => response.json());
-}   
+async function lookupISBN(isbn) {
+  const response = await fetch(`https://openlibrary.org/search.json?isbn=${isbn}&fields=title,first_publish_year,author_name`);
+  const data = await response.json();
+  const book = data.docs?.[0];
+  if (!book) return null;
+  return {
+    isbn,
+    title: book.title,
+    year: book.first_publish_year,
+    author: book.author_name?.[0] ?? "Unknown",
+  };
+}
 
 function validate(body) {
   const { isbn, title, year, author } = body;
