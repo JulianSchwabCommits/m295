@@ -27,8 +27,7 @@ async function lookupISBN(isbn) {
 
 function validate(body) {
   const { isbn, title, year, author } = body;
-  if (!isbn || !title || !year || !author) // is there a better way of doing this ?
-    return "isbn, title, year, author are required";
+  if (!isbn || !title || !year || !author) return "isbn, title, year, author are required";
   return null;
 }
 
@@ -43,21 +42,13 @@ app.get("/books/:isbn", (req, res) => {
   res.status(200).json(book);
 });
 
-app.post("/books", async (req, res) => {
-  let body = req.body;
-  const error = validate(body);
-  if (error) {
-    if (!body.isbn) return res.status(422).json({ message: error });
-    const looked_up = await lookupISBN(body.isbn);
-    if (!looked_up) return res.status(422).json({ message: error });
-    body = { ...looked_up, ...body };
-    const error2 = validate(body);
-    if (error2) return res.status(422).json({ message: error2 });
-  }
+app.post("/books", (req, res) => {
+  const error = validate(req.body);
+  if (error) return res.status(422).json({ message: error });
 
-  const exists = books.find((b) => b.isbn === body.isbn);
+  const exists = books.find((b) => b.isbn === req.body.isbn);
   if (exists) return res.status(409).json({ message: "Book with this ISBN already exists" });
-  const book = { isbn: body.isbn, title: body.title, year: body.year, author: body.author };
+  const book = { isbn: req.body.isbn, title: req.body.title, year: req.body.year, author: req.body.author };
   books.push(book);
   res.status(201).json(book);
 });
@@ -91,9 +82,47 @@ app.patch("/books/:isbn", (req, res) => {
   res.status(200).json(updated);
 });
 
-app.get("/test", async (req, res) => {
+app.get("/test/:isbn", async (req, res) => {
   const isbn = req.query.isbn;
   const data = await lookupISBN(isbn);
   res.status(200).json(data);
 })
+
+
+
+
+
+// lend
+
+const lends = [];
+
+app.get("/lends", (req, res) => {
+  res.status(200).json(lends);
+});
+
+app.get("/lends/:id", (req, res) => {
+  const lend = lends.find((l) => l.id === req.params.id);
+  if (!lend) return res.status(404).json({ message: "Lend not found" });
+  res.status(200).json(lend);
+});
+
+app.post("/lends", (req, res) => {
+  const { customerId, isbn } = req.body ?? {};
+  if (!customerId || !isbn) return res.status(422).json({ message: "customerId and isbn are required" });
+
+  const book = books.find((b) => b.isbn === isbn);
+  if (!book) return res.status(404).json({ message: "Book not found" });
+
+  const lend = {
+    id: crypto.randomUUID(),
+    customerId,
+    isbn,
+    borrowedAt: new Date().toISOString(),
+    returnedAt: null,
+  };
+  lends.push(lend);
+  res.status(201).json(lend);
+});
+
+
 app.listen(port, () => console.log("Running on Port " + port.toString()));

@@ -1,0 +1,7 @@
+info:
+  name: aufgabe5-2
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
