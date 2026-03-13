@@ -2,6 +2,7 @@ import express from "express";
 
 const app = express();
 app.use(express.json());
+const port = 3000;
 
 const books = [
   { isbn: "978-3-16-148410-0", title: "Der Prozess", year: 1925, author: "Franz Kafka" },
@@ -13,27 +14,25 @@ const books = [
 
 function validate(body) {
   const { isbn, title, year, author } = body;
-  if (!isbn || !title || !year || !author) return false;
+  if (!isbn || !title || !year || !author) return false; // is there a better way of doing this?
   return true;
 }
 
-// GET /books - all books
 app.get("/books", (req, res) => {
   res.status(200).json(books);
 });
 
-// GET /books/:isbn - single book
 app.get("/books/:isbn", (req, res) => {
   const book = books.find((b) => b.isbn === req.params.isbn);
   if (!book) return res.status(404).json({ message: "Book not found" });
   res.status(200).json(book);
 });
 
-// POST /books - create book
 app.post("/books", (req, res) => {
   if (!validate(req.body)) {
-    return res.status(422).json({ message: "All fields (isbn, title, year, author) are required" });
+    return res.status(422).json({ message: "isbn, title, year, author are required" });
   }
+
   const exists = books.find((b) => b.isbn === req.body.isbn);
   if (exists) return res.status(409).json({ message: "Book with this ISBN already exists" });
   const book = { isbn: req.body.isbn, title: req.body.title, year: req.body.year, author: req.body.author };
@@ -41,10 +40,9 @@ app.post("/books", (req, res) => {
   res.status(201).json(book);
 });
 
-// PUT /books/:isbn - replace book
 app.put("/books/:isbn", (req, res) => {
   if (!validate(req.body)) {
-    return res.status(422).json({ message: "All fields (isbn, title, year, author) are required" });
+    return res.status(422).json({ message: "isbn, title, year, author are required" });
   }
   const index = books.findIndex((b) => b.isbn === req.params.isbn);
   if (index === -1) return res.status(404).json({ message: "Book not found" });
@@ -53,7 +51,6 @@ app.put("/books/:isbn", (req, res) => {
   res.status(200).json(book);
 });
 
-// DELETE /books/:isbn - delete book
 app.delete("/books/:isbn", (req, res) => {
   const index = books.findIndex((b) => b.isbn === req.params.isbn);
   if (index === -1) return res.status(404).json({ message: "Book not found" });
@@ -61,7 +58,6 @@ app.delete("/books/:isbn", (req, res) => {
   res.status(204).send();
 });
 
-// PATCH /books/:isbn - partial update
 app.patch("/books/:isbn", (req, res) => {
   const index = books.findIndex((b) => b.isbn === req.params.isbn);
   if (index === -1) return res.status(404).json({ message: "Book not found" });
@@ -69,11 +65,11 @@ app.patch("/books/:isbn", (req, res) => {
   const updated = { ...books[index], ...req.body };
   const { isbn, title, year, author } = updated;
   if (!isbn || !title || !year || !author) {
-    return res.status(422).json({ message: "All fields (isbn, title, year, author) are required" });
+    return res.status(422).json({ message: "isbn, title, year, author are required" });
   }
 
   books[index] = updated;
   res.status(200).json(updated);
 });
 
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+app.listen(port, () => console.log("Running on Port " + port.toString()));

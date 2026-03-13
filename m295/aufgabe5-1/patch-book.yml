@@ -1,0 +1,21 @@
+info:
+  name: Patch book (PATCH)
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: http://localhost:3000/books/978-0-452-28423-4
+  body:
+    type: json
+    data: |-
+      {
+        "title": "1984 (Updated Title)"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
