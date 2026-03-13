@@ -14,9 +14,10 @@ const books = [
 
 function validate(body) {
   const { isbn, title, year, author } = body;
-  if (!isbn || !title || !year || !author) return false; // is there a better way of doing this?
-  return true;
+  if (!isbn || !title || !year || !author) return "isbn, title, year, author are required";
+  return null;
 }
+
 
 app.get("/books", (req, res) => {
   res.status(200).json(books);
@@ -29,9 +30,8 @@ app.get("/books/:isbn", (req, res) => {
 });
 
 app.post("/books", (req, res) => {
-  if (!validate(req.body)) {
-    return res.status(422).json({ message: "isbn, title, year, author are required" });
-  }
+  const error = validate(req.body);
+  if (error) return res.status(422).json({ message: error });
 
   const exists = books.find((b) => b.isbn === req.body.isbn);
   if (exists) return res.status(409).json({ message: "Book with this ISBN already exists" });
@@ -41,9 +41,8 @@ app.post("/books", (req, res) => {
 });
 
 app.put("/books/:isbn", (req, res) => {
-  if (!validate(req.body)) {
-    return res.status(422).json({ message: "isbn, title, year, author are required" });
-  }
+  const error = validate(req.body);
+  if (error) return res.status(422).json({ message: error });
   const index = books.findIndex((b) => b.isbn === req.params.isbn);
   if (index === -1) return res.status(404).json({ message: "Book not found" });
   const book = { isbn: req.body.isbn, title: req.body.title, year: req.body.year, author: req.body.author };
@@ -63,10 +62,8 @@ app.patch("/books/:isbn", (req, res) => {
   if (index === -1) return res.status(404).json({ message: "Book not found" });
 
   const updated = { ...books[index], ...req.body };
-  const { isbn, title, year, author } = updated;
-  if (!isbn || !title || !year || !author) {
-    return res.status(422).json({ message: "isbn, title, year, author are required" });
-  }
+  const error = validate(updated);
+  if (error) return res.status(422).json({ message: error });
 
   books[index] = updated;
   res.status(200).json(updated);
