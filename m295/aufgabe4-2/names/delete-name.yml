@@ -1,0 +1,19 @@
+info:
+  name: Delete name from list
+  type: http
+  seq: 4
+
+http:
+  method: DELETE
+  url: http://localhost:3000/names?name=Julian
+  params:
+    - name: name
+      value: Julian
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

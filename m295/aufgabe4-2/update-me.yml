@@ -1,0 +1,23 @@
+info:
+  name: Update me object
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: http://localhost:3000/me
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Julian",
+        "age": 18,
+        "city": "Bern"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
