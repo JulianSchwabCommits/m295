@@ -1,9 +1,45 @@
 import express from "express";
-
+import session from "express-session";
 
 const app = express();
 app.use(express.json());
+app.use(session({
+    secret: "gfsdlöj2345t",
+    resave: false,
+    saveUninitialized: false,
+}));
 const port = 3000;
+// how to validate meail
+const users = [
+    { email: "admin@library.ch", password: "1234" },
+    { email: "user@library.ch", password: "1234" },
+];
+
+function requireAuth(req, res, next) {
+    if (req.session?.email) {
+        return next();
+    }
+
+    res.status(401).json({ message: "Unauthorized" });
+}
+
+app.post("/login", (req, res) => {
+    const { email, password } = req.body;
+    const user = users.find((u) => u.email === email && u.password === password);
+    if (!user) return res.status(401).json({ message: "Invalid email or password" });
+    req.session.email = user.email;
+    res.status(200).json({ message: "Login successful", email: user.email });
+});
+
+app.get("/verify", (req, res) => {
+    if (!req.session?.email) return res.status(401).json({ message: "Unauthorized" });
+    res.status(200).json({ email: req.session.email });
+});
+
+app.delete("/logout", (req, res) => {
+    req.session.destroy();
+    res.status(204).send();
+});
 
 const books = [
     { isbn: "978-3-16-148410-0", title: "Der Prozess", year: 1925, author: "Franz Kafka" },
@@ -77,11 +113,11 @@ app.patch("/books/:isbn", (req, res) => {
 // lend
 const lends = [{ id: crypto.randomUUID(), customerId: "1", isbn: "978-0-7432-7356-5", borrowedAt: new Date().toISOString(), returnedAt: null }];
 
-app.get("/lends", (req, res) => {
+app.get("/lends", requireAuth, (req, res) => {
     res.status(200).json(lends);
 });
 
-app.get("/lends/:id", (req, res) => {
+app.get("/lends/:id", requireAuth, (req, res) => {
     const lend = lends.find((l) => l.id === req.params.id);
     if (!lend) return res.status(404).json({ error: "Lend not found" });
     res.status(200).json(lend);
@@ -99,7 +135,7 @@ function postlends(customerId, isbn) {
     return lend;
 }
 
-app.post("/lends", (req, res) => {
+app.post("/lends", requireAuth, (req, res) => {
     const customerId = req.body?.customerId;
     const isbn = req.body?.isbn;
 
@@ -116,14 +152,11 @@ app.post("/lends", (req, res) => {
     res.status(201).json(content);
 });
 
-app.delete("/lends/:id", (req, res) => {
+app.delete("/lends/:id", requireAuth, (req, res) => {
     const index = lends.findIndex((l) => l.id === req.params.id);
     if (index === -1) return res.status(404).json({ error: "Lend not found" });
     lends.splice(index, 1);
     res.status(200).json({ message: "its deleted" });
 });
-
-
-app
 
 app.listen(port, () => console.log("Running on Port " + port.toString()));
