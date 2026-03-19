@@ -1,11 +1,11 @@
 info:
-  name: "Delete "
+  name: ping
   type: http
-  seq: 4
+  seq: 1
 
 http:
-  method: DELETE
-  url: http://localhost:3000/books/978-3-98-765432-1
+  method: GET
+  url: http://localhost:3000/ping
   auth: inherit
 
 settings:

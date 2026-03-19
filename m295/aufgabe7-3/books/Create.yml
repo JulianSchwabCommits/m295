@@ -12,7 +12,8 @@ http:
       {
         "isbn": "978-3-98-765432-1",
         "title": "Clean Code",
-        "author": "Robert C. Martin"
+        "author": "Robert C. Martin",
+        "year":123245
       }
   auth: inherit
 

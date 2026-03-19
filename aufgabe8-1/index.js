@@ -1,17 +1,14 @@
 import express from "express";
 import session from "express-session";
 
-const port = 3000;
 const app = express();
-
 app.use(express.json());
 app.use(session({
     secret: "gfsdlöj2345t",
     resave: false,
     saveUninitialized: false,
 }));
-
-
+const port = 3000;
 const users = [
     { email: "desk@library.example", password: "m295" }
 ];

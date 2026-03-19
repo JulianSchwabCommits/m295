@@ -1,0 +1,17 @@
+info:
+  name: echo
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:3000/echo
+  headers:
+    - name: x-auth-token
+      value: sd
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
