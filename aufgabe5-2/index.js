@@ -99,7 +99,7 @@ app.get("/test/:isbn", async (req, res) => {
 
 
 // lend
-const lends = [{ id: crypto.randomUUID(), customerId: "123", isbn: "978-3-16-148410-0", borrowedAt: new Date().toISOString(), returnedAt: null }];
+const lends = [{ id: crypto.randomUUID(), customerId: "1", isbn: "978-0-7432-7356-5", borrowedAt: new Date().toISOString(), returnedAt: null }];
 
 app.get("/lends", (req, res) => {
   res.status(200).json(lends);
@@ -130,6 +130,12 @@ app.post("/lends", (req, res) => {
   if (!customerId || !isbn) {
     return res.status(400).json({ error: "customerId and isbn are required" });
   }
+  const book = books.find((b) => b.isbn === isbn);
+  if (!book) return res.status(404).json({ error: "Book not found" });
+
+  const existingLend = lends.find((l) => l.isbn === isbn && l.returnedAt === null);
+  if (existingLend) return res.status(409).json({ error: "Book is already lent out" });
+
   const content = postlends(customerId, isbn);
   res.status(201).json(content);
 });

@@ -1,0 +1,30 @@
+info:
+  name: book cant be lend more that 1 time
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:3000/lends
+  body:
+    type: json
+    data: |-
+      {
+        "customerId":"2",
+        "isbn":"978-0-7432-7356-5"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("cant lend a book multiple times", function () {
+          expect(res.getStatus()).to.equal(409);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
