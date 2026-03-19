@@ -1,5 +1,5 @@
 import express from 'express';
-import * as bookController from './bookController.js';
+import * as bookController from '../controller/book.js';
 
 const router = express.Router();
 
