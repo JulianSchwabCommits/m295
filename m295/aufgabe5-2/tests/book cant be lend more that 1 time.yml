@@ -14,7 +14,7 @@ http:
         "isbn":"978-0-7432-7356-5"
       }
   auth: inherit
-
+w
 runtime:
   scripts:
     - type: tests
