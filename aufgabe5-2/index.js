@@ -1,7 +1,13 @@
 import express from "express";
+import swaggerUi from 'swagger-ui-express';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const swaggerDocument = require('./swagger-output.json');
 
 const app = express();
 app.use(express.json());
+app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 const port = 3000;
 
 const books = [
@@ -93,8 +99,7 @@ app.get("/test/:isbn", async (req, res) => {
 
 
 // lend
-
-const lends = [];
+const lends = [{ id: crypto.randomUUID(), customerId: "123", isbn: "978-3-16-148410-0", borrowedAt: new Date().toISOString(), returnedAt: null }];
 
 app.get("/lends", (req, res) => {
   res.status(200).json(lends);
@@ -102,27 +107,38 @@ app.get("/lends", (req, res) => {
 
 app.get("/lends/:id", (req, res) => {
   const lend = lends.find((l) => l.id === req.params.id);
-  if (!lend) return res.status(404).json({ message: "Lend not found" });
+  if (!lend) return res.status(404).json({ error: "Lend not found" });
   res.status(200).json(lend);
 });
 
-app.post("/lends", (req, res) => {
-  const { customerId, isbn } = req.body ?? {};
-  if (!customerId || !isbn) return res.status(422).json({ message: "customerId and isbn are required" });
-
-  const book = books.find((b) => b.isbn === isbn);
-  if (!book) return res.status(404).json({ message: "Book not found" });
-
+function postlends(customerId, isbn) {
   const lend = {
     id: crypto.randomUUID(),
-    customerId,
-    isbn,
+    customerId: customerId,
+    isbn: isbn,
     borrowedAt: new Date().toISOString(),
-    returnedAt: null,
+    returnedAt: null
   };
   lends.push(lend);
-  res.status(201).json(lend);
+  return lend;
+}
+
+app.post("/lends", (req, res) => {
+  const customerId = req.body?.customerId;
+  const isbn = req.body?.isbn;
+
+  if (!customerId || !isbn) {
+    return res.status(400).json({ error: "customerId and isbn are required" });
+  }
+  const content = postlends(customerId, isbn);
+  res.status(201).json(content);
 });
 
+app.delete("/lends/:id", (req, res) => {
+  const index = lends.findIndex((l) => l.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: "Lend not found" });
+  lends.splice(index, 1);
+  res.status(200).json({ message: "its deleted" });
+});
 
 app.listen(port, () => console.log("Running on Port " + port.toString()));

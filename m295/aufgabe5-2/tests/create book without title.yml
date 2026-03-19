@@ -1,7 +1,7 @@
 info:
-  name: Create book
+  name: create book without title
   type: http
-  seq: 3
+  seq: 2
 
 http:
   method: POST
@@ -11,10 +11,18 @@ http:
     data: |-
       {
         "isbn": "978-3-98-765432-1",
-        "title": "Clean Code",
+        "title": "",
         "author": "Robert C. Martin"
       }
   auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("book without title", function () {
+          expect(res.getStatus()).to.equal(422);
+        });
 
 settings:
   encodeUrl: true

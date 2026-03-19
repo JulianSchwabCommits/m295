@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/lends/1
+  url: http://localhost:3000/lends/ff74b624-2b90-41c8-8738-cd12747e8f21
   auth: inherit
 
 settings:
