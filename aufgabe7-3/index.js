@@ -11,8 +11,7 @@ app.use(session({
 const port = 3000;
 // how to validate meail
 const users = [
-    { email: "admin@library.ch", password: "1234" },
-    { email: "user@library.ch", password: "1234" },
+    { email: "desk@library.example", password: "m295" }
 ];
 
 function requireAuth(req, res, next) {
