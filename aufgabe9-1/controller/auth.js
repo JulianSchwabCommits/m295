@@ -62,6 +62,10 @@ export function verify(req, res) {
 }
 
 export function logout(req, res) {
+  if (!req.session?.email) {
+    return res.status(401).json({ message: 'not logged in' });
+  }
+
   req.session.destroy();
   res.status(204).send();
 }

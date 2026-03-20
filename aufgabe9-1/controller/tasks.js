@@ -20,7 +20,11 @@ function validate(body) {
 }
 
 export function getAllTasks(req, res) {
-  res.status(200).json(tasks);
+  try {
+    res.status(200).json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: 'internal server error' });
+  }
 }
 
 export function getTasksById(req, res) {
@@ -39,8 +43,6 @@ export function getTasksById(req, res) {
   }
 }
 
-// dueDate is optional right?
-// implement some sort of time validation for dueDate you you cnat send everything
 export function postTask(req, res) {
   try {
     const error = validate(req.body);
@@ -96,9 +98,9 @@ export function putTaskById(req, res) {
     }
 
     task.title = req.body.title;
-    task.description = req.body.description ?? task.description;
-    task.dueDate = req.body.dueDate ?? task.dueDate;
-    task.completedAt = req.body.completedAt ?? task.completedAt;
+    task.description = req.body.description || '';
+    task.dueDate = req.body.dueDate || '';
+    task.completedAt = req.body.completedAt || '';
 
     res.status(200).json(task);
   } catch (err) {
@@ -116,7 +118,7 @@ export function deleteTaskById(req, res) {
     }
 
     tasks.splice(index, 1);
-    res.status(204);
+    res.status(204).send();
   } catch (err) {
     res.status(500).json({ message: 'internal server error' });
   }
