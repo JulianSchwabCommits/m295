@@ -1,10 +1,10 @@
 import express from 'express';
-import * as auth from '../controller/auth.js';
+import * as controller from '../controller/auth.js';
 
 const router = express.Router();
 
-router.post('/login', auth.login);
-router.get('/verify', auth.verify);
-router.delete('/logout', auth.logout);
+router.post('/login', controller.login);
+router.get('/verify', controller.verify);
+router.delete('/logout', controller.logout);
 
 export default router;
