@@ -1,12 +1,21 @@
 import { tasks } from '../data/defaults.js';
+import { isValid, parseISO } from 'date-fns';
 
 function validate(body) {
   const title = body?.title;
-  const description = body?.description;
 
-  if (!title || !description) {
-    return 'title and description are required';
+  if (!title) {
+    return 'title is required';
   }
+
+  if (body.dueDate && !isValid(parseISO(body.dueDate))) {
+    return 'dueDate is not a valid date';
+  }
+
+  if (body.completedAt && !isValid(parseISO(body.completedAt))) {
+    return 'completedAt is not a valid date';
+  }
+
   return null;
 }
 
@@ -43,10 +52,10 @@ export function postTask(req, res) {
     const task = {
       id: crypto.randomUUID(),
       title: req.body.title,
-      description: req.body.description,
+      description: req.body.description || '',
       createdAt: new Date().toISOString(),
       dueDate: req.body.dueDate || '',
-      completedAt: '',
+      completedAt: req.body.completedAt || '',
     };
 
     tasks.push(task);
@@ -87,9 +96,9 @@ export function putTaskById(req, res) {
     }
 
     task.title = req.body.title;
-    task.description = req.body.description;
-    task.dueDate = req.body.dueDate || task.dueDate;
-    task.completedAt = req.body.completedAt || task.completedAt;
+    task.description = req.body.description ?? task.description;
+    task.dueDate = req.body.dueDate ?? task.dueDate;
+    task.completedAt = req.body.completedAt ?? task.completedAt;
 
     res.status(200).json(task);
   } catch (err) {
@@ -107,7 +116,7 @@ export function deleteTaskById(req, res) {
     }
 
     tasks.splice(index, 1);
-    res.status(204).json({ message: 'its deleted' });
+    res.status(204);
   } catch (err) {
     res.status(500).json({ message: 'internal server error' });
   }

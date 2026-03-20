@@ -5,14 +5,15 @@ info:
 
 http:
   method: PUT
-  url: http://localhost:3000/tasks/c529610c-ab1d-4c68-8dc4-f6309b64fa32
+  url: http://localhost:3000/tasks/74b096db-d87e-4955-9fe8-af8ae2b1014d
   body:
     type: json
     data: |2-
       
         {
           "title": "Test Task",
-          "description": "ljk"
+          "description": "ljk",
+          "dueDate":"2026-04-01T12:00:00.000Z"
         }
   auth: inherit
 
