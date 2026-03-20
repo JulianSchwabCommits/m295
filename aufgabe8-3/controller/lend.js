@@ -1,4 +1,4 @@
-import { books, lends } from '../data/defaults.js';
+import { books, lends, users } from '../data/defaults.js';
 
 export function getAllLends(req, res) {
   res.status(200).json(lends);
@@ -17,6 +17,17 @@ export function createLend(req, res) {
 
   if (!customerId || !isbn) {
     return res.status(400).json({ error: 'customerId and isbn are required' });
+  }
+
+  // only allow lending for yourself
+  if (customerId !== req.session.email) {
+    return res.status(403).json({ error: 'You can only lend books for yourself' });
+  }
+
+  // customerId must be a known user
+  const knownUser = users.find((u) => u.email === customerId);
+  if (!knownUser) {
+    return res.status(403).json({ error: 'Unknown customer' });
   }
 
   const book = books.find((b) => b.isbn === isbn);

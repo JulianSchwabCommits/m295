@@ -1,7 +1,7 @@
 import { books } from '../data/defaults.js';
 
 function validate(body) {
-  const isbn = body;
+  const isbn = body.isbn;
   const title = body.title;
   const year = body.year;
   const author = body.author;

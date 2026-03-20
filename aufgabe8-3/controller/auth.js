@@ -19,6 +19,12 @@ export function verify(req, res) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
+  const user = users.find((u) => u.email === req.session.email);
+  if (!user) {
+    req.session.destroy();
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
   res.status(200).json({ email: req.session.email });
 }
 

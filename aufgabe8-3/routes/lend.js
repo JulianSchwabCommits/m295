@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', lendController.getAllLends);
 router.get('/:id', lendController.getLendById);
-router.post('/', lendController.createLend);
+router.post('/', requireAuth, lendController.createLend);
 router.delete('/:id', requireAuth, lendController.deleteLend);
 
 export default router;
