@@ -1,4 +1,4 @@
-import books from '../data/defaults.js';
+import { books } from '../data/defaults.js';
 
 function validate(body) {
   const isbn = body;

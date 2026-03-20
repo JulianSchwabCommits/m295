@@ -1,4 +1,4 @@
-import users from '../data/defaults.js';
+import { users } from '../data/defaults.js';
 
 export function login(req, res) {
   const email = req.body.email;
