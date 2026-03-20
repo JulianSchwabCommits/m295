@@ -8,7 +8,7 @@ http:
   url: http://localhost:3000/login
   body:
     type: json
-    data: '{"email":"admin@library.ch","password":"1234"}'
+    data: '{"email":"desk@library.example","password":"m295"}'
   auth: inherit
 
 settings:
