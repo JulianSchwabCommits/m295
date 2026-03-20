@@ -2,6 +2,12 @@ import { users } from '../data/defaults.js';
 
 export function login(req, res) {
   try {
+    if (req.session?.email) {
+      return res
+        .status(200)
+        .json({ message: 'already logged in', email: req.session.email });
+    }
+
     const email = req.body?.email;
     const password = req.body?.password;
 
@@ -40,7 +46,6 @@ export function verify(req, res) {
 
     const user = users.find((u) => u.email === req.session.email);
     if (!user) {
-      // req.session.destroy(); should i destroy the session
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
