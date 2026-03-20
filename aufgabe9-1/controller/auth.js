@@ -44,6 +44,10 @@ export function verify(req, res) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
+    if (email !== req.session.email) {
+      return res.status(401).json({ message: 'email does not match session' });
+    }
+
     res
       .status(200)
       .json({ message: 'session valid', email: req.session.email });
