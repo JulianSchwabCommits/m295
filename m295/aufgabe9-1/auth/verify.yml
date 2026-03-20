@@ -1,0 +1,18 @@
+info:
+  name: verify
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:3000/verify
+  body:
+    type: json
+    data: '{"email":"julian@notmy.ail"}'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
