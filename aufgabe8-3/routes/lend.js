@@ -1,11 +1,12 @@
 import express from 'express';
 import * as lendController from '../controller/lend.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
 router.get('/', lendController.getAllLends);
 router.get('/:id', lendController.getLendById);
 router.post('/', lendController.createLend);
-router.delete('/:id', lendController.deleteLend);
+router.delete('/:id', requireAuth, lendController.deleteLend);
 
 export default router;

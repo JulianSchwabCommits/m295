@@ -2,7 +2,9 @@ import { books } from '../data/defaults.js';
 
 function validate(body) {
   const { isbn, title, year, author } = body;
-  if (!isbn || !title || !year || !author) return "isbn, title, year, author are required";
+  if (!isbn || !title || !year || !author) {
+    return "isbn, title, year, author are required";
+  }
   return null;
 }
 

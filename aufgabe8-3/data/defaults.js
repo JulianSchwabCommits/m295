@@ -9,3 +9,7 @@ export const books = [
 export const lends = [
   { id: crypto.randomUUID(), customerId: "1", isbn: "978-0-7432-7356-5", borrowedAt: new Date().toISOString(), returnedAt: null },
 ];
+
+export const users = [
+  { email: "desk@library.example", password: "m295" },
+];
