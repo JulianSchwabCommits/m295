@@ -1,0 +1,18 @@
+info:
+  name: postTask
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:3000/tasks
+  body:
+    type: json
+    data: '{"title":"mytitle","description":"this is a description","dueDate":"lol"}'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

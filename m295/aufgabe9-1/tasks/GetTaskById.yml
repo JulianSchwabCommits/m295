@@ -1,14 +1,11 @@
 info:
-  name: verify
+  name: GetTaskById
   type: http
   seq: 2
 
 http:
   method: GET
-  url: http://localhost:3000/verify
-  body:
-    type: json
-    data: '{"email":"julian@notmy.mail"}'
+  url: http://localhost:3000/tasks/70a0dbfd-e429-45a2-93c9-7438442e6482
   auth: inherit
 
 settings:
